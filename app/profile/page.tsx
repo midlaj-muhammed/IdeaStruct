@@ -11,6 +11,7 @@ import { Label } from '@/components/ui/label'
 import { useToast } from '@/components/ui/use-toast'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Loader2 } from 'lucide-react'
+import { Database } from '@/lib/database.types'
 
 export default function ProfilePage() {
   const { user, profile, loading, refreshProfile } = useUser()
@@ -20,6 +21,8 @@ export default function ProfilePage() {
   const fileInputRef = useRef<HTMLInputElement>(null)
   const router = useRouter()
   const { toast } = useToast()
+
+  type UserUpdate = Partial<Database['public']['Tables']['users']['Row']>
 
   const uploadAvatar = async (file: File) => {
     try {
@@ -38,13 +41,16 @@ export default function ProfilePage() {
         .from('avatars')
         .getPublicUrl(filePath)
 
+      const updateData: UserUpdate = {
+        avatar_url: publicUrl || null,
+        updated_at: new Date().toISOString(),
+      }
+
+      // @ts-ignore
       const { error: updateError } = await supabase
         .from('users')
-        .upsert({
-          id: user!.id,
-          avatar_url: publicUrl,
-          updated_at: new Date().toISOString(),
-        })
+        .update(updateData)
+        .eq('id', user?.id || '')
 
       if (updateError) throw updateError
 
@@ -76,14 +82,16 @@ export default function ProfilePage() {
 
     setUpdating(true)
     try {
+      const updateProfileData: UserUpdate = {
+        name,
+        updated_at: new Date().toISOString()
+      }
+
+      // @ts-ignore
       const { error } = await supabase
         .from('users')
-        .upsert({
-          id: user.id,
-          email: user.email!,
-          name,
-          updated_at: new Date().toISOString(),
-        })
+        .update(updateProfileData)
+        .eq('id', user.id || '')
 
       if (error) throw error
 

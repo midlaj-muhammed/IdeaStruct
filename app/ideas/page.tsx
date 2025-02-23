@@ -1,7 +1,8 @@
 'use client'
 
 import { supabase } from '@/lib/supabase'
-import { Idea } from '@/types/idea'
+import type { Database } from '@/lib/database.types'
+import type { Idea } from '@/types/idea'
 import { format } from 'date-fns'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
@@ -50,9 +51,9 @@ function IdeasGrid({ ideas }: { ideas: Idea[] }) {
             <h3 className="text-lg font-semibold mb-2 line-clamp-2">
               {idea.idea}
             </h3>
-            {idea.target && (
+            {idea.target_audience && (
               <p className="text-sm text-gray-600 mb-2">
-                <span className="font-medium">Target:</span> {idea.target}
+                <span className="font-medium">Target Audience:</span> {idea.target_audience}
               </p>
             )}
           </div>
@@ -95,14 +96,17 @@ export default function IdeasPage() {
         .from('ideas')
         .select('*')
         .order('created_at', { ascending: false })
+        .returns<Database['public']['Tables']['ideas']['Row'][]>()
 
       if (error) {
         console.error('Error fetching ideas:', error)
         return
       }
 
-      setIdeas(data)
-      setFilteredIdeas(data)
+      if (data) {
+        setIdeas(data)
+        setFilteredIdeas(data)
+      }
       setLoading(false)
     }
 

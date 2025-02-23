@@ -3,21 +3,15 @@
 import { useEffect, useState } from 'react'
 import { useUser } from '@/contexts/user'
 import { supabase } from '@/lib/supabase'
+import type { Database } from '@/lib/database.types'
+import type { PostgrestError } from '@supabase/supabase-js'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 import { Download, Plus, RefreshCw } from 'lucide-react'
 import { toast } from '@/components/ui/use-toast'
 
-interface Idea {
-  id: string
-  created_at: string
-  idea: string
-  platform: string
-  target_audience?: string
-  features?: string
-  blueprint: string
-}
+type Idea = Database['public']['Tables']['ideas']['Row']
 
 const PAGE_SIZE = 6
 
@@ -55,18 +49,16 @@ export default function DashboardPage() {
       console.log('Table access check passed');
 
       // Now try to get the actual ideas
-      const { data, error, count } = await supabase
+      if (!user?.id) {
+        console.log('No user ID available');
+        return;
+      }
+
+      const query = supabase
         .from('ideas')
-        .select(`
-          id,
-          created_at,
-          idea,
-          platform,
-          target_audience,
-          features,
-          blueprint,
-          user_id
-        `, { count: 'exact' })
+        .select('*', { count: 'exact' }) as any;
+
+      const { data, error, count } = await query
         .eq('user_id', user.id)
         .order('created_at', { ascending: false })
         .range(start, start + PAGE_SIZE - 1);

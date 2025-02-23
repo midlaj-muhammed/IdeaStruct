@@ -1,5 +1,6 @@
 import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
+import type { ResponseCookie } from 'next/dist/compiled/@edge-runtime/cookies'
 import { NextResponse } from 'next/server'
 
 export const dynamic = 'force-dynamic'
@@ -25,7 +26,7 @@ export async function GET(request: Request) {
       return NextResponse.redirect(`${origin}/login?error=No authorization code provided`)
     }
 
-    const cookieStore = cookies()
+    const cookieStore = await cookies()
     const supabase = createServerClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
@@ -34,11 +35,11 @@ export async function GET(request: Request) {
           get(name: string) {
             return cookieStore.get(name)?.value
           },
-          set(name: string, value: string, options: any) {
-            cookieStore.set(name, value, options)
+          set(name: string, value: string, options: { path?: string }) {
+            cookieStore.set(name, value, { ...options })
           },
-          remove(name: string, options: any) {
-            cookieStore.delete(name, options)
+          remove(name: string, options: { path?: string }) {
+            cookieStore.delete({ name, path: options?.path })
           },
         },
       }

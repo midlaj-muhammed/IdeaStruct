@@ -1,17 +1,22 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { supabase } from '@/lib/supabase'
 
-export async function DELETE(
-  req: Request,
-  { params }: { params: { id: string } }
-) {
+export const dynamic = 'force-dynamic'
+
+export async function DELETE(request: NextRequest) {
   try {
-    const { id } = params
+    const id = request.nextUrl.pathname.split('/').pop()
+    if (!id) {
+      return NextResponse.json(
+        { error: 'No ID provided' },
+        { status: 400 }
+      )
+    }
 
     const { error } = await supabase
       .from('ideas')
       .delete()
-      .eq('id', id)
+      .match({ id })
 
     if (error) {
       return NextResponse.json(

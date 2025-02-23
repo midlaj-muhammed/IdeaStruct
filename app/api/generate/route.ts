@@ -1,194 +1,135 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { generateContent } from '@/lib/ai-service';
+import { supabase } from '@/lib/supabase';
 
 export const maxDuration = 300; // Set maximum duration to 5 minutes
 export const dynamic = 'force-dynamic'; // Disable static optimization
 
-// Set CORS headers
+// CORS headers
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
   'Access-Control-Allow-Headers': 'Content-Type, Authorization',
 };
 
-export async function OPTIONS() {
-  return NextResponse.json({}, { headers: corsHeaders });
-}
+// Helper function to generate a basic blueprint
+function generateBasicBlueprint(idea: string, platform: string = 'web', features: string = '') {
+  return `# ${idea} Blueprint
 
-// Fallback blueprint generator
-function generateFallbackBlueprint(input: { idea: string; platform?: string; features?: string }) {
-  const { idea, platform = 'web', features = '' } = input;
-  
-  return `# Technical Blueprint for: ${idea}
+## Overview
+A ${platform} application that ${idea.toLowerCase()}.
 
-## Architecture Overview
-- Modern ${platform} application using industry-standard practices
-- Microservices architecture for scalability
-- Cloud-native design principles
+## Features
+${features ? features.split(',').map((f: string) => `- ${f.trim()}`).join('\n') : '- Feature list not provided'}
 
-## Frontend Stack
-- React.js with Next.js framework
-- TypeScript for type safety
-- Tailwind CSS for styling
-- State management with React Context/Redux
+## Technical Stack
+- Frontend: React with Next.js
+- UI: Tailwind CSS
+- Backend: Node.js
+- Database: PostgreSQL
+- Authentication: JWT
+- API: RESTful
 
-## Backend Stack
-- Node.js/Express.js API server
-- RESTful API design
-- Microservices architecture
-- Message queue for async operations
+## Implementation Steps
+1. Setup project structure
+2. Implement core features
+3. Add authentication
+4. Deploy and test
 
-## Database Design
-- PostgreSQL for primary data storage
-- Redis for caching
-- Prisma as ORM
+## Timeline
+- Planning: 1 week
+- Development: 4-6 weeks
+- Testing: 2 weeks
+- Deployment: 1 week
 
-## Key Features Implementation
-${features ? features.split(',').map(f => `- ${f.trim()}`).join('\n') : '- Core features to be determined'}
-
-## Security Considerations
-- JWT authentication
-- HTTPS encryption
-- Input validation
-- Rate limiting
-- CORS policies
-
-## Deployment Strategy
-- Docker containerization
-- Kubernetes orchestration
-- CI/CD pipeline with GitHub Actions
-- Cloud hosting (AWS/GCP/Azure)
-
-## Monitoring & Analytics
-- Application monitoring
-- Error tracking
-- User analytics
-- Performance metrics
+## Next Steps
+1. Create detailed wireframes
+2. Set up development environment
+3. Begin implementation of core features
 
 This blueprint provides a foundation for a scalable and maintainable application.`;
 }
 
-export async function POST(req: Request) {
+export async function OPTIONS() {
+  return NextResponse.json({}, { headers: corsHeaders });
+}
+
+export async function POST(request: NextRequest) {
   try {
-    const { prompt } = await req.json();
+    const { prompt } = await request.json();
 
     if (!prompt) {
       return NextResponse.json(
-        { error: 'Prompt is required' },
+        { error: 'No prompt provided' },
         { status: 400, headers: corsHeaders }
       );
     }
 
     // Extract information from the prompt
     const lines = prompt.split('\n');
-    const idea = lines.find(l => l.includes('App Idea:'))?.split('App Idea:')[1]?.trim() || 'Application';
-    const platform = lines.find(l => l.includes('Target Platform:'))?.split('Target Platform:')[1]?.trim();
-    const features = lines.find(l => l.includes('Required Features:'))?.split('Required Features:')[1]?.trim();
+    const idea = lines.find((l: string) => l.includes('App Idea:'))?.split('App Idea:')[1]?.trim() || 'Application';
+    const platform = lines.find((l: string) => l.includes('Target Platform:'))?.split('Target Platform:')[1]?.trim();
+    const features = lines.find((l: string) => l.includes('Required Features:'))?.split('Required Features:')[1]?.trim();
 
     // Generate content using AI service
     let content;
     try {
-      content = await generateContent({ prompt });
+      content = await generateContent(prompt);
     } catch (error) {
-      console.error('Error generating content using AI service:', error);
-      // Fallback to generating a blueprint
-      content = generateFallbackBlueprint({
-        idea,
-        platform,
-        features
-      });
+      console.error('Error generating content with AI:', error);
+      // Fallback to basic blueprint if AI service fails
+      content = generateBasicBlueprint(idea, platform, features);
     }
 
-    return NextResponse.json(
-      { content },
-      { headers: corsHeaders }
-    );
+    return NextResponse.json({ content }, { headers: corsHeaders });
   } catch (error) {
-    console.error('Generation error:', error);
+    console.error('Error generating blueprint:', error);
     return NextResponse.json(
-      { error: 'Failed to generate content' },
+      { error: 'Failed to generate blueprint' },
       { status: 500, headers: corsHeaders }
     );
   }
 }
 
-export async function GET(req: Request) {
-  // Add CORS headers to all responses
-  const headers = {
-    ...corsHeaders,
-  }
-
+export async function GET(request: NextRequest) {
   try {
-    const { searchParams } = new URL(req.url)
-    const id = searchParams.get('id')
+    const { searchParams } = new URL(request.url);
+    const id = searchParams.get('id');
 
     if (!id) {
       return NextResponse.json(
-        { error: 'Missing idea ID' },
-        { status: 400, headers }
-      )
+        { error: 'No ID provided' },
+        { status: 400, headers: corsHeaders }
+      );
     }
 
-    // Fetch idea from Supabase
-    let idea
     try {
       const { data, error } = await supabase
         .from('ideas')
-        .select('*')
-        .eq('id', id)
-        .single()
+        .select()
+        .match({ id })
+        .single();
 
-      if (error) throw error
-      if (!data) throw new Error('Idea not found')
-      
-      idea = data
-    } catch (error) {
-      console.error('Error fetching idea:', error)
-      return NextResponse.json(
-        { error: 'Failed to fetch idea' },
-        { status: 500, headers }
-      )
-    }
-
-    // Generate new blueprint using Puter.js
-    let blueprint
-    try {
-      // Validate environment variables before proceeding
-      try {
-        getRequiredEnvVar('ANTHROPIC_API_KEY', 'blueprint generation');
-      } catch (envError) {
-        console.error('Environment validation failed:', envError);
+      if (error) {
         return NextResponse.json(
-          { 
-            error: 'API configuration error. Please ensure ANTHROPIC_API_KEY is set correctly in .env.local',
-            details: process.env.NODE_ENV === 'development' ? envError.message : undefined
-          },
-          { status: 500, headers }
+          { error: 'Failed to fetch idea' },
+          { status: 500, headers: corsHeaders }
         );
       }
 
-      blueprint = await generateBlueprint({
-        idea: idea.idea,
-        platform: idea.platform,
-        target: idea.target || undefined,
-        features: idea.features || undefined,
-      })
+      return NextResponse.json(data, { headers: corsHeaders });
     } catch (error) {
-      console.error('Error regenerating blueprint:', error)
-      // Fallback to generating a blueprint
-      blueprint = generateFallbackBlueprint({
-        idea: idea.idea,
-        platform: idea.platform,
-        features: idea.features || undefined,
-      })
+      console.error('Error fetching idea:', error);
+      return NextResponse.json(
+        { error: 'Failed to fetch idea' },
+        { status: 500, headers: corsHeaders }
+      );
     }
-
-    return NextResponse.json({ blueprint }, { headers })
   } catch (error) {
-    console.error('API error:', error)
+    console.error('Error:', error);
     return NextResponse.json(
       { error: 'Internal server error' },
-      { status: 500, headers }
-    )
+      { status: 500, headers: corsHeaders }
+    );
   }
 }

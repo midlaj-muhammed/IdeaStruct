@@ -27,20 +27,17 @@ export interface Database {
           updated_at?: string
         }
         Update: {
-          id?: string
-          email?: string
-          name?: string | null
-          avatar_url?: string | null
-          created_at?: string
-          updated_at?: string
+          [key: string]: any
         }
       }
       ideas: {
         Row: {
           id: string
           user_id: string
-          title: string
-          description: string | null
+          idea: string
+          platform: 'web' | 'mobile' | 'desktop' | 'cross-platform'
+          target_audience: string | null
+          features: string | null
           blueprint: string
           created_at: string
           updated_at: string

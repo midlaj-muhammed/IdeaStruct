@@ -6,9 +6,20 @@ import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase-browser'
 import { toast } from '@/components/ui/use-toast'
 
+export interface UserProfile {
+  id: string
+  email: string
+  name: string | null
+  avatar_url: string | null
+  created_at: string
+  updated_at: string
+}
+
 export type UserContextType = {
   user: User | null
-  isLoading: boolean
+  profile: UserProfile | null
+  loading: boolean
+  refreshProfile: () => Promise<void>
   signOut: () => Promise<void>
   signInWithGithub: () => Promise<void>
   signInWithGoogle: () => Promise<void>
@@ -25,27 +36,47 @@ export interface Props {
 
 export function UserProvider({ children, initialSession }: Props) {
   const [user, setUser] = useState<User | null>(initialSession?.user || null)
-  const [isLoading, setIsLoading] = useState<boolean>(!initialSession)
+  const [profile, setProfile] = useState<UserProfile | null>(null)
+  const [loading, setLoading] = useState<boolean>(!initialSession)
   const router = useRouter()
 
   useEffect(() => {
     const initializeAuth = async () => {
       try {
         // Get the current authenticated user
-        const { data: { user: currentUser }, error } = await supabase.auth.getUser()
+        const { data: { user: currentUser }, error: userError } = await supabase.auth.getUser()
         
-        if (error) {
-          console.error('Error getting user:', error)
+        if (userError) {
+          console.error('Error getting user:', userError)
           setUser(null)
+          setProfile(null)
+          return
+        }
+
+        setUser(currentUser)
+
+        if (currentUser) {
+          const { data: profileData, error: profileError } = await supabase
+            .from('users')
+            .select('*')
+            .eq('id', currentUser.id)
+            .single()
+
+          if (profileError) {
+            console.error('Error getting profile:', profileError)
+            setProfile(null)
+          } else {
+            setProfile(profileData)
+          }
         } else {
-          console.log('Current user:', currentUser)
-          setUser(currentUser)
+          setProfile(null)
         }
       } catch (error) {
         console.error('Error initializing auth:', error)
         setUser(null)
+        setProfile(null)
       } finally {
-        setIsLoading(false)
+        setLoading(false)
       }
     }
 
@@ -78,9 +109,32 @@ export function UserProvider({ children, initialSession }: Props) {
     }
   }, [])
 
+  const refreshProfile = async () => {
+    if (!user) return
+
+    try {
+      const { data, error } = await supabase
+        .from('users')
+        .select('*')
+        .eq('id', user.id)
+        .single()
+
+      if (error) {
+        console.error('Error refreshing profile:', error)
+        return
+      }
+
+      setProfile(data)
+    } catch (error) {
+      console.error('Error refreshing profile:', error)
+    }
+  }
+
   const value = {
     user,
-    isLoading,
+    profile,
+    loading,
+    refreshProfile,
     signOut: async () => {
       try {
         const { error } = await supabase.auth.signOut()
