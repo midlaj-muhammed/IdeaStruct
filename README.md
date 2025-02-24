@@ -2,6 +2,8 @@
 
 Turn your app ideas into structured blueprints instantly with AI-powered insights.
 
+🌐 **[Live Demo](https://idea-struct.vercel.app/)**
+
 ## Features ✨
 
 - **AI-Powered Blueprint Generation**: Transform your app ideas into comprehensive development plans
@@ -20,6 +22,7 @@ Turn your app ideas into structured blueprints instantly with AI-powered insight
 - **AI Integration**: OpenAI GPT
 - **State Management**: React Hooks
 - **Type Safety**: TypeScript
+- **Deployment**: Vercel
 
 ## Getting Started 🌟
 
@@ -45,7 +48,7 @@ NEXT_PUBLIC_APP_URL=http://localhost:3000
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/ideastruct.git
+   git clone https://github.com/midlaj-muhammed/IdeaStruct.git
    cd ideastruct
    ```
 
@@ -56,18 +59,26 @@ NEXT_PUBLIC_APP_URL=http://localhost:3000
    yarn install
    ```
 
-3. Set up the database:
-   - Run the migrations in the `supabase/migrations` folder
-   - This will create the necessary tables and functions
-
-4. Start the development server:
+3. Run the development server:
    ```bash
    npm run dev
    # or
    yarn dev
    ```
 
-5. Open [http://localhost:3000](http://localhost:3000) in your browser
+4. Open [http://localhost:3000](http://localhost:3000) in your browser
+
+## Deployment 🚀
+
+The project is deployed on Vercel and can be accessed at [https://idea-struct.vercel.app/](https://idea-struct.vercel.app/)
+
+To deploy your own instance:
+
+1. Fork this repository
+2. Create a new project on Vercel
+3. Connect your forked repository
+4. Add your environment variables in Vercel project settings
+5. Deploy!
 
 ## Database Schema 📊
 
@@ -98,26 +109,22 @@ NEXT_PUBLIC_APP_URL=http://localhost:3000
 
 ## Contributing 🤝
 
+Contributions are welcome! Please feel free to submit a Pull Request.
+
 1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
 ## License 📝
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## Acknowledgments 🙏
-
-- [Next.js](https://nextjs.org/)
-- [Supabase](https://supabase.com/)
-- [Tailwind CSS](https://tailwindcss.com/)
-- [shadcn/ui](https://ui.shadcn.com/)
-- [OpenAI](https://openai.com/)
-
 ## Support 💬
 
-For support, email support@ideastruct.com or join our Discord community.
-# IdeaStruct
-# IdeaStruct
+If you have any questions or need help, please open an issue or reach out to the maintainers.
+
+---
+
+Built with ❤️ using Next.js, Supabase, and OpenAI
