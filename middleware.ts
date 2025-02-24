@@ -1,5 +1,4 @@
-import { createServerClient } from '@supabase/ssr'
-import { createMiddlewareClient } from '@supabase/auth-helpers-nextjs'
+import { createServerClient, type CookieOptions } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
 export const config = {
@@ -91,12 +90,9 @@ export async function middleware(request: NextRequest) {
       return NextResponse.redirect(new URL('/dashboard', request.url))
     }
 
-    // Verify the session is valid by checking the user
-    const authSupabase = createMiddlewareClient({ req: request, res: response })
-    const { data: { user }, error } = await authSupabase.auth.getUser()
-    
-    if (error) {
-      console.error('Auth error in middleware:', error)
+    // Session is already verified by getSession() above
+    if (sessionError) {
+      console.error('Auth error in middleware:', sessionError)
     }
 
     return response
