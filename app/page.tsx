@@ -50,7 +50,7 @@ export default function Home() {
                 Log in
               </Button>
             </Link>
-            <Link href="/signup">
+            <Link href="/login">
               <Button size="lg" className="bg-black text-white hover:bg-gray-800">
                 Get started
               </Button>
