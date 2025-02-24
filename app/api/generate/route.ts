@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { generateContent } from '@/lib/ai-service';
 import { supabase } from '@/lib/supabase';
 
-export const maxDuration = 300; // Set maximum duration to 5 minutes
+export const maxDuration = 60; // Set maximum duration to 60 seconds (Vercel Hobby plan limit)
 export const dynamic = 'force-dynamic'; // Disable static optimization
 
 // CORS headers
