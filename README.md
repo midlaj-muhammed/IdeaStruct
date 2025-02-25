@@ -2,8 +2,6 @@
 
 Turn your app ideas into structured blueprints instantly with AI-powered insights.
 
-Visit [https://idea-struct.vercel.app/](https://idea-struct.vercel.app/) to see it in action.
-
 ## Features ✨
 
 - **AI-Powered Blueprint Generation**: Transform your app ideas into comprehensive development plans
@@ -121,3 +119,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## Support 💬
 
 For support, email support@ideastruct.com or join our Discord community.
+# IdeaStruct
+# IdeaStruct
+# IdeaStruct
