@@ -120,7 +120,9 @@ export function AuthForm({ mode }: AuthFormProps) {
       // Get the current URL for the redirect
       const redirectTo = typeof window !== 'undefined'
         ? `${window.location.origin}/auth/callback`
-        : 'http://localhost:3000/auth/callback'
+        : process.env.NEXT_PUBLIC_VERCEL_URL 
+          ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}/auth/callback`
+          : 'http://localhost:3000/auth/callback'
 
       // Get current path to redirect back after auth
       const currentPath = typeof window !== 'undefined' 

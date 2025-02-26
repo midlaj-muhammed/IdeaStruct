@@ -32,6 +32,8 @@ const allowedDomains = [
   'https://*.puter.com',
   'http://localhost:3000',
   'https://localhost:3000',
+  'https://*.vercel.app',  // Allow Vercel preview deployments
+  process.env.NEXT_PUBLIC_VERCEL_URL ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}` : '',  // Allow production deployment
 ]
 
 function isAllowedDomain(url: string): boolean {
