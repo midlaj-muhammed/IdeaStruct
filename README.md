@@ -1,32 +1,49 @@
-# IdeaStruct
+# IdeaStruct 🚀
 
-Transform your app ideas into detailed technical blueprints with AI-powered insights.
+Turn your app ideas into structured blueprints instantly with AI-powered insights.
 
-🚀 **[Live Demo](https://idea-struct.vercel.app/)**
+🌐 **[Live Demo](https://idea-struct.vercel.app/)**
 
-## Overview
+## Features ✨
 
-IdeaStruct is an innovative web platform that helps developers and entrepreneurs transform their app ideas into comprehensive technical blueprints. Using AI technology, it provides detailed tech stack recommendations and implementation plans tailored to your specific needs.
+- **AI-Powered Blueprint Generation**: Transform your app ideas into comprehensive development plans
+- **Smart Organization**: Keep all your ideas in one place with an intuitive dashboard
+- **Real-time Generation**: Get detailed blueprints in seconds
+- **User Authentication**: Secure access to your ideas with Supabase authentication
+- **Modern UI**: Clean, responsive interface built with Next.js 13 and Tailwind CSS
 
-## Features
+## Tech Stack 🛠️
 
-- 🤖 **AI-Powered Analysis**: Get intelligent tech stack recommendations
-- 📝 **Blueprint Generation**: Receive detailed implementation plans
-- 🔐 **Secure Authentication**: Login with GitHub, Google, or email
-- 💾 **Project Storage**: Save and manage your app ideas
-- 🎨 **Modern UI**: Clean and responsive design with Tailwind CSS
-- ⚡ **Fast Performance**: Built with Next.js and React
+- **Frontend**: Next.js 13 (App Router)
+- **Styling**: Tailwind CSS
+- **UI Components**: shadcn/ui
+- **Authentication**: Supabase Auth
+- **Database**: Supabase PostgreSQL
+- **AI Integration**: OpenAI GPT
+- **State Management**: React Hooks
+- **Type Safety**: TypeScript
 
-## Tech Stack
+## Getting Started 🌟
 
-- **Frontend**: Next.js 14, React, TypeScript
-- **Styling**: Tailwind CSS, Shadcn UI
-- **Backend**: Supabase
-- **Authentication**: OAuth 2.0 (GitHub, Google)
-- **AI Integration**: Claude AI
-- **Deployment**: Vercel
+### Prerequisites
 
-## Getting Started
+- Node.js 18+ 
+- npm or yarn
+- Supabase account
+- OpenAI API key
+
+### Environment Setup
+
+Create a `.env.local` file in the root directory:
+
+```env
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+OPENAI_API_KEY=your_openai_api_key
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+```
+
+### Installation
 
 1. Clone the repository:
    ```bash
@@ -37,28 +54,51 @@ IdeaStruct is an innovative web platform that helps developers and entrepreneurs
 2. Install dependencies:
    ```bash
    npm install
+   # or
+   yarn install
    ```
 
-3. Set up environment variables:
-   Create a `.env.local` file with:
-   ```
-   NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
-   NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
-   NEXT_PUBLIC_SITE_URL=your_site_url
-   ```
+3. Set up the database:
+   - Run the migrations in the `supabase/migrations` folder
+   - This will create the necessary tables and functions
 
 4. Start the development server:
    ```bash
    npm run dev
+   # or
+   yarn dev
    ```
 
 5. Open [http://localhost:3000](http://localhost:3000) in your browser
 
-## Live Demo
+## Database Schema 📊
 
-Visit [https://idea-struct.vercel.app/](https://idea-struct.vercel.app/) to try IdeaStruct.
+### Users Table
+- id (UUID, Primary Key)
+- email (Text)
+- created_at (Timestamp)
+- updated_at (Timestamp)
 
-## Contributing
+### Ideas Table
+- id (UUID, Primary Key)
+- user_id (UUID, Foreign Key)
+- idea (Text)
+- platform (Text)
+- target_audience (Text)
+- features (Text)
+- blueprint (Text)
+- created_at (Timestamp)
+- updated_at (Timestamp)
+
+## API Routes 🛣️
+
+- `POST /api/generate` - Generate app blueprint
+- `GET /api/ideas` - Fetch user's ideas
+- `POST /api/ideas` - Save new idea
+- `PUT /api/ideas/:id` - Update existing idea
+- `DELETE /api/ideas/:id` - Delete idea
+
+## Contributing 🤝
 
 1. Fork the repository
 2. Create your feature branch (`git checkout -b feature/amazing-feature`)
@@ -66,11 +106,18 @@ Visit [https://idea-struct.vercel.app/](https://idea-struct.vercel.app/) to try 
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
-## License
+## License 📝
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## Contact
+## Acknowledgments 🙏
 
-- Website: [https://idea-struct.vercel.app/](https://idea-struct.vercel.app/)
-- GitHub: [@midlaj-muhammed](https://github.com/midlaj-muhammed)
+- [Next.js](https://nextjs.org/)
+- [Supabase](https://supabase.com/)
+- [Tailwind CSS](https://tailwindcss.com/)
+- [shadcn/ui](https://ui.shadcn.com/)
+- [OpenAI](https://openai.com/)
+
+## Support 💬
+
+For support, email support@ideastruct.com or join our Discord community.
