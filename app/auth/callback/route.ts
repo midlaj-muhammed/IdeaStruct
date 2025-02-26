@@ -11,6 +11,7 @@ export async function GET(request: Request) {
     const code = requestUrl.searchParams.get('code')
     const error = requestUrl.searchParams.get('error')
     const error_description = requestUrl.searchParams.get('error_description')
+    const next = requestUrl.searchParams.get('next') || '/dashboard'
     const origin = requestUrl.origin
 
     // Handle OAuth error response
@@ -53,7 +54,8 @@ export async function GET(request: Request) {
       )
     }
 
-    return NextResponse.redirect(`${origin}/dashboard`)
+    // Successful authentication, redirect to the intended destination
+    return NextResponse.redirect(`${origin}${next}`)
   } catch (error) {
     console.error('Unexpected error in auth callback:', error)
     return NextResponse.redirect(
