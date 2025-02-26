@@ -99,7 +99,12 @@ export function AuthForm({ mode }: AuthFormProps) {
           description: "Please check your email to verify your account",
         })
       } else {
-        router.push('/dashboard')
+        // After successful login, check session and redirect
+        const { data: { session } } = await supabase.auth.getSession()
+        if (session) {
+          router.push('/dashboard')
+          router.refresh() // Refresh to update auth state
+        }
       }
     } catch (error) {
       toast({
