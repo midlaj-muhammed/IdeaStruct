@@ -7,6 +7,7 @@ export interface GeneratePromptInput {
   features?: string
 }
 
+// Use the fastest Gemini model for quicker responses within Vercel's 60-second limit
 const MODEL_NAME = "gemini-1.5-flash"
 // Get API key from environment variables
 const API_KEY = process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY
@@ -182,7 +183,14 @@ export async function generateBlueprint(input: GeneratePromptInput): Promise<str
     }
 
     try {
-      const model = genAI.getGenerativeModel({ model: MODEL_NAME })
+      // Set a timeout to ensure we don't exceed Vercel's 60-second limit
+      const model = genAI.getGenerativeModel({
+        model: MODEL_NAME,
+        generationConfig: {
+          maxOutputTokens: 8192, // Limit output size for faster generation
+          temperature: 0.7,      // Balance between creativity and determinism
+        }
+      })
 
       const prompt = `# Advanced App Blueprint Generator
 
@@ -193,99 +201,71 @@ ${target ? `- Target Audience: ${target}` : ''}
 ${features ? `- Key Features: ${features}` : ''}
 
 ## Instructions:
-You are an expert software architect and technical product manager. Create an extremely detailed and comprehensive markdown blueprint for this app idea. The blueprint should be thorough, technically precise, and actionable for developers. Include code snippets, diagrams (described in text), and specific implementation details where appropriate.
+You are an expert software architect. Create a detailed markdown blueprint for this app idea that is technically precise and actionable for developers. Be concise but thorough.
 
-1. **Executive Summary**
-   - Concise overview of the application (2-3 paragraphs)
-   - Key value propositions and differentiators
-   - Market positioning and opportunity
+1. **Executive Summary** - Brief overview, value proposition, market opportunity
 
 2. **App Overview**
-   - Comprehensive description of the app concept
-   - Detailed purpose and goals with measurable objectives
-   - In-depth target audience analysis with user personas
-   - Competitive analysis with at least 3 similar products
-   - Unique selling points and market advantages
+   - App concept description
+   - Purpose and goals
+   - Target audience analysis
+   - Competitive positioning
 
 3. **Technical Architecture**
-   - Detailed tech stack recommendations with justifications for each technology choice
-   - Complete system architecture diagram (described in text)
-   - Infrastructure requirements and cloud service recommendations
-   - Scalability considerations and strategies
-   - Security architecture and data protection measures
-   - Third-party integrations and APIs
+   - Tech stack recommendations with justifications
+   - System architecture overview
+   - Security considerations
+   - Third-party integrations
 
 4. **Database Design**
-   - Detailed database schema with tables, fields, and relationships
-   - Data models with field types and constraints
-   - Indexing strategy and query optimization
-   - Data migration and backup strategies
-   - Sample database queries for key operations
+   - Database schema (tables, fields, relationships)
+   - Data models
+   - Key queries
 
 5. **API Specifications**
-   - Comprehensive RESTful API endpoints with HTTP methods
-   - Request/response formats with JSON examples
-   - Authentication and authorization mechanisms
-   - Rate limiting and caching strategies
-   - API documentation standards
+   - RESTful API endpoints
+   - Authentication approach
+   - Example JSON formats
 
 6. **Feature Specifications**
-   - Exhaustive breakdown of each feature with acceptance criteria
-   - User stories and use cases for each feature
-   - Detailed user flows with step-by-step processes
-   - Technical implementation details with potential challenges
-   - Edge cases and error handling strategies
-   - Code snippets for complex logic
+   - Breakdown of each feature
+   - User flows
+   - Implementation details
+   - Code examples for complex logic
 
 7. **UI/UX Design Guidelines**
-   - Comprehensive design system recommendations
-   - Detailed wireframes for key screens (described in text)
-   - User interaction patterns and navigation flows
-   - Accessibility considerations (WCAG compliance)
-   - Responsive design strategies for different devices
-   - Animation and transition recommendations
+   - Design system recommendations
+   - Key screens description
+   - User interaction patterns
+   - Responsive design approach
 
 8. **Development Roadmap**
-   - Detailed project phases with specific features in each phase
-   - Sprint planning recommendations
-   - Resource allocation suggestions
-   - Precise time estimates for each development phase
-   - Critical path analysis and dependencies
-   - Risk assessment and mitigation strategies
+   - Project phases
+   - Time estimates
+   - Dependencies
 
-9. **Testing Strategy**
-   - Comprehensive testing approach (unit, integration, E2E)
-   - Test automation recommendations
-   - Performance testing methodologies
-   - Security testing procedures
-   - User acceptance testing plan
+9. **Testing & Deployment**
+   - Testing approach
+   - CI/CD recommendations
+   - Monitoring strategy
 
-10. **Deployment and DevOps**
-    - Detailed CI/CD pipeline configuration
-    - Environment setup (development, staging, production)
-    - Infrastructure as Code recommendations
-    - Monitoring and logging strategies
-    - Disaster recovery plan
-    - Blue/green deployment strategy
+10. **Maintenance & Cost**
+    - Maintenance plan
+    - Cost estimates
 
-11. **Maintenance and Evolution**
-    - Long-term maintenance plan
-    - Performance optimization strategies
-    - Feature expansion roadmap
-    - Analytics implementation for user behavior tracking
-    - Feedback collection mechanisms
-    - Version update strategy
+Format as a well-structured markdown document with proper headings, subheadings, and bullet points. Include code examples where helpful.`
 
-12. **Cost Estimation**
-    - Development cost breakdown
-    - Hosting and infrastructure costs
-    - Third-party service costs
-    - Maintenance and support costs
-    - Scaling costs as user base grows
+      // Create a promise that rejects after 50 seconds (to stay within Vercel's 60-second limit)
+      const timeout = new Promise((_, reject) => {
+        setTimeout(() => reject(new Error('Gemini API call timed out')), 50000);
+      });
 
-Format the entire response as a well-structured markdown document with proper headings, subheadings, and bullet points. Use code blocks for any code examples or configuration snippets. Be extremely detailed and specific in all sections.`
+      // Race the API call against the timeout
+      const result = await Promise.race([
+        model.generateContent(prompt),
+        timeout
+      ]) as any;
 
-      const result = await model.generateContent(prompt)
       const response = await result.response
       const text = response.text()
 

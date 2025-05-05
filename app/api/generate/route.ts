@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { generateBlueprint } from '@/lib/gemini';
 import { supabase } from '@/lib/supabase';
 
-export const maxDuration = 120; // Set maximum duration to 120 seconds for detailed blueprint generation
+export const maxDuration = 60; // Set maximum duration to 60 seconds (Vercel Hobby plan limit)
 export const dynamic = 'force-dynamic'; // Disable static optimization
 
 // CORS headers
