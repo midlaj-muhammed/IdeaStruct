@@ -29,63 +29,35 @@ export default function IdeaForm() {
   }
 
   const generateBlueprint = async (prompt: string) => {
-    // Try Puter AI first
-    if (window.puter?.ai) {
-      try {
-        const systemPrompt = `You are a technical architect helping to create blueprints for applications. 
-Generate a detailed technical blueprint that includes architecture, technologies, and implementation details.
-Focus on modern best practices and scalable solutions.`;
+    // Use our Gemini API integration
+    console.log('Generating blueprint with prompt:', prompt);
 
-        const fullPrompt = `${systemPrompt}
+    try {
+      const response = await fetch('/api/generate', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ prompt })
+      });
 
-Project Requirements:
-${prompt}
+      // Even if response is not ok, we'll try to parse the JSON
+      const data = await response.json();
 
-Please provide a detailed technical blueprint including:
-1. Architecture Overview
-2. Frontend Stack
-3. Backend Stack
-4. Database Design
-5. Key Features Implementation
-6. Security Considerations
-7. Deployment Strategy`;
-
-        const response = await window.puter.ai.chat(fullPrompt, {
-          model: 'gpt-3.5-turbo'
-        });
-
-        const content = response.message.content
-          .map(item => item.text)
-          .join('\n')
-          .trim();
-
-        if (!content) {
-          throw new Error('No content generated');
-        }
-
-        return content;
-      } catch (error) {
-        console.error('Error from Puter AI:', error);
-        // Fall through to API fallback
+      if (!response.ok) {
+        console.error('API error:', data.error);
+        throw new Error(data.error || 'Failed to generate blueprint');
       }
+
+      if (!data.content) {
+        throw new Error('No content received from API');
+      }
+
+      return data.content;
+    } catch (error) {
+      console.error('Error in generateBlueprint:', error);
+      throw error;
     }
-
-    // Fallback to API if Puter AI is not available or fails
-    const response = await fetch('/api/generate', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ prompt })
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.error || 'Failed to generate blueprint');
-    }
-
-    const data = await response.json();
-    return data.content;
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -113,7 +85,7 @@ ${features ? `Required Features:\n${features.split(',').map(f => `- ${f.trim()}`
 `;
 
       const blueprint = await generateBlueprint(prompt);
-      
+
       // Save blueprint to localStorage for the success page
       localStorage.setItem('blueprint', blueprint);
       localStorage.setItem('fileName', `${idea.toLowerCase().replace(/[^a-z0-9]+/g, '_').slice(0, 50)}_blueprint.md`);
@@ -132,18 +104,18 @@ ${features ? `Required Features:\n${features.split(',').map(f => `- ${f.trim()}`
             router.push('/login');
             return;
           }
-          
+
           console.log('Starting idea save process:', {
             userId: session.user.id,
             ideaTitle: idea,
             hasBlueprint: !!blueprint
           });
-          
+
           // Verify the data before saving
           if (!blueprint) {
             throw new Error('Blueprint is missing');
           }
-          
+
           const ideaData = {
             idea,
             platform,
@@ -152,9 +124,9 @@ ${features ? `Required Features:\n${features.split(',').map(f => `- ${f.trim()}`
             blueprint,
             user_id: session.user.id
           };
-          
+
           console.log('Saving idea data:', ideaData);
-          
+
           const { data, error: saveError } = await supabase
             .from('ideas')
             .insert(ideaData)
@@ -172,16 +144,16 @@ ${features ? `Required Features:\n${features.split(',').map(f => `- ${f.trim()}`
           }
 
           console.log('Idea saved successfully:', data);
-          
+
           toast({
             title: "Success",
             description: "Blueprint generated and saved to your account!",
             variant: "default",
           });
-          
+
           // Clear localStorage cache to ensure fresh data on next dashboard visit
           localStorage.removeItem('ideas_cache_' + session.user.id);
-          
+
         } catch (error) {
           console.error('Error in save process:', error);
           toast({
@@ -217,50 +189,77 @@ ${features ? `Required Features:\n${features.split(',').map(f => `- ${f.trim()}`
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <div className="space-y-2">
-        <Label htmlFor="idea">App Idea</Label>
+        <div className="flex justify-between items-center">
+          <Label htmlFor="idea">App Idea</Label>
+          <span className="text-xs text-muted-foreground">Required</span>
+        </div>
         <Textarea
           id="idea"
           name="idea"
-          placeholder="Describe your app idea..."
+          placeholder="Describe your app idea in detail. The more specific you are, the better the blueprint will be."
           required
+          className="min-h-[100px]"
         />
+        <p className="text-xs text-muted-foreground">
+          Example: "A task management app that helps teams track project progress, assign tasks, and set deadlines with real-time notifications."
+        </p>
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="platform">Platform</Label>
-        <Select name="platform">
+        <div className="flex justify-between items-center">
+          <Label htmlFor="platform">Platform</Label>
+          <span className="text-xs text-muted-foreground">Required</span>
+        </div>
+        <Select name="platform" defaultValue="web">
           <SelectTrigger>
             <SelectValue placeholder="Select platform" />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="web">Web</SelectItem>
             <SelectItem value="mobile">Mobile</SelectItem>
-            <SelectItem value="both">Both</SelectItem>
+            <SelectItem value="both">Both (Web & Mobile)</SelectItem>
           </SelectContent>
         </Select>
+        <p className="text-xs text-muted-foreground">
+          This will determine the recommended technologies and architecture in your blueprint.
+        </p>
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="target">Target Audience</Label>
-        <Input
+        <div className="flex justify-between items-center">
+          <Label htmlFor="target">Target Audience</Label>
+          <span className="text-xs text-muted-foreground">Recommended</span>
+        </div>
+        <Textarea
           id="target"
           name="target"
-          placeholder="Who is this app for?"
+          placeholder="Describe your target users in detail. Include demographics, needs, pain points, and user personas if possible."
+          className="min-h-[80px]"
         />
+        <p className="text-xs text-muted-foreground">
+          Example: "Small to medium business owners aged 30-50 who need to manage their inventory and sales data but have limited technical knowledge."
+        </p>
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="features">Key Features</Label>
+        <div className="flex justify-between items-center">
+          <Label htmlFor="features">Key Features</Label>
+          <span className="text-xs text-muted-foreground">Recommended</span>
+        </div>
         <Textarea
           id="features"
           name="features"
-          placeholder="List the main features..."
+          placeholder="List the main features of your app in detail. Separate features with commas or new lines. Be specific about what each feature should do."
+          className="min-h-[120px]"
         />
+        <p className="text-xs text-muted-foreground">
+          Example: "User authentication with social login options, Task creation with priority levels and due dates, Team collaboration with comments and file attachments, Kanban board view with drag-and-drop functionality, Automated email notifications for task updates"
+        </p>
       </div>
 
       <div className="flex items-center space-x-2">
-        <Checkbox 
-          id="saveIdea" 
+        <Checkbox
+          id="saveIdea"
           checked={saveIdea}
           onCheckedChange={(checked) => setSaveIdea(checked as boolean)}
         />

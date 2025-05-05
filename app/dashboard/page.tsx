@@ -214,23 +214,23 @@ export default function DashboardPage() {
 
   if (loading) {
     return (
-      <div className="container mx-auto px-4 py-8">
+      <div className="container px-4 md:px-6 py-8">
         <div className="flex justify-between items-center mb-8">
-          <div className="h-8 w-32 bg-gray-200 rounded animate-pulse" />
-          <div className="h-10 w-24 bg-gray-200 rounded animate-pulse" />
+          <div className="h-8 w-32 bg-muted rounded animate-pulse" />
+          <div className="h-10 w-24 bg-muted rounded animate-pulse" />
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {[...Array(6)].map((_, i) => (
-            <Card key={i} className="animate-pulse">
+            <Card key={i} className="animate-pulse border shadow-sm">
               <CardHeader>
-                <div className="h-6 bg-gray-200 rounded w-3/4" />
-                <div className="h-4 bg-gray-200 rounded w-1/2 mt-2" />
+                <div className="h-6 bg-muted rounded w-3/4" />
+                <div className="h-4 bg-muted rounded w-1/2 mt-2" />
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
-                  <div className="h-4 bg-gray-200 rounded w-full" />
-                  <div className="h-4 bg-gray-200 rounded w-3/4" />
-                  <div className="h-10 bg-gray-200 rounded w-full mt-4" />
+                  <div className="h-4 bg-muted rounded w-full" />
+                  <div className="h-4 bg-muted rounded w-3/4" />
+                  <div className="h-10 bg-muted rounded w-full mt-4" />
                 </div>
               </CardContent>
             </Card>
@@ -241,64 +241,87 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="flex justify-between items-center mb-8">
+    <div className="container px-4 md:px-6 py-8">
+      {/* Dashboard Header */}
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight">My Ideas</h1>
+          <p className="text-muted-foreground mt-1">Manage and organize your app blueprints</p>
+        </div>
         <div className="flex items-center gap-4">
-          <h1 className="text-3xl font-bold">My Ideas</h1>
           <Button
-            variant="ghost"
+            variant="outline"
             size="icon"
             onClick={refresh}
             disabled={refreshing}
             className={refreshing ? 'animate-spin' : ''}
+            title="Refresh ideas"
           >
             <RefreshCw className="w-4 h-4" />
           </Button>
-        </div>
-        <Link href="/generate">
-          <Button className="flex items-center gap-2">
-            <Plus className="w-4 h-4" />
-            New Idea
+          <Button asChild className="flex items-center gap-2">
+            <Link href="/generate">
+              <Plus className="w-4 h-4" />
+              New Idea
+            </Link>
           </Button>
-        </Link>
+        </div>
       </div>
 
       {ideas.length === 0 ? (
-        <Card>
-          <CardHeader>
-            <CardTitle>No ideas yet</CardTitle>
-            <CardDescription>
-              Start by generating your first app blueprint
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Link href="/generate">
-              <Button className="w-full">Generate Your First Blueprint</Button>
-            </Link>
-          </CardContent>
-        </Card>
+        <div className="max-w-md mx-auto mt-12">
+          <Card className="border shadow-sm">
+            <CardHeader className="text-center">
+              <div className="mx-auto bg-primary/10 w-12 h-12 rounded-full flex items-center justify-center mb-4">
+                <Plus className="w-6 h-6 text-primary" />
+              </div>
+              <CardTitle>No ideas yet</CardTitle>
+              <CardDescription>
+                Start by generating your first app blueprint
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="flex justify-center">
+              <Button asChild className="gap-1">
+                <Link href="/generate">
+                  Generate Your First Blueprint
+                </Link>
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
       ) : (
         <>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {ideas.map((idea) => (
-              <Card key={idea.id} className="flex flex-col">
+              <Card key={idea.id} className="flex flex-col border shadow-sm hover:shadow-md transition-shadow">
                 <CardHeader>
-                  <CardTitle className="text-xl">{idea.idea}</CardTitle>
-                  <CardDescription>Platform: {idea.platform}</CardDescription>
+                  <CardTitle className="text-xl line-clamp-1">{idea.idea}</CardTitle>
+                  <CardDescription className="flex items-center">
+                    <span className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-primary/10 text-primary">
+                      {idea.platform}
+                    </span>
+                    <span className="text-xs text-muted-foreground ml-2">
+                      {new Date(idea.created_at).toLocaleDateString()}
+                    </span>
+                  </CardDescription>
                 </CardHeader>
                 <CardContent className="flex-1 flex flex-col">
-                  {idea.target_audience && (
-                    <p className="text-sm mb-2">
-                      <strong>Target Audience:</strong> {idea.target_audience}
-                    </p>
-                  )}
-                  {idea.features && (
-                    <p className="text-sm mb-4">
-                      <strong>Key Features:</strong> {idea.features}
-                    </p>
-                  )}
-                  <Button 
-                    variant="outline" 
+                  <div className="space-y-2 mb-6 flex-1">
+                    {idea.target_audience && (
+                      <div>
+                        <p className="text-xs font-medium text-muted-foreground mb-1">Target Audience</p>
+                        <p className="text-sm line-clamp-1">{idea.target_audience}</p>
+                      </div>
+                    )}
+                    {idea.features && (
+                      <div>
+                        <p className="text-xs font-medium text-muted-foreground mb-1">Key Features</p>
+                        <p className="text-sm line-clamp-2">{idea.features}</p>
+                      </div>
+                    )}
+                  </div>
+                  <Button
+                    variant="outline"
                     className="w-full mt-auto flex items-center gap-2"
                     onClick={() => downloadBlueprint(idea)}
                   >
@@ -315,6 +338,7 @@ export default function DashboardPage() {
                 variant="outline"
                 onClick={loadMore}
                 disabled={loadingMore}
+                className="min-w-[120px]"
               >
                 {loadingMore ? 'Loading...' : 'Load More'}
               </Button>

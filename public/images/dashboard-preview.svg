@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="1200" height="675" viewBox="0 0 1200 675" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="1200" height="675" rx="12" fill="#FFFFFF"/>
+  
+  <!-- Header -->
+  <rect width="1200" height="70" fill="#F9FAFB"/>
+  <rect x="0" y="70" width="1200" height="1" fill="#E5E7EB"/>
+  
+  <!-- Logo -->
+  <circle cx="50" cy="35" r="24" fill="url(#header-logo-gradient)"/>
+  <path d="M40 25 L40 45 L60 45" stroke="white" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+  <path d="M60 25 C 70 25, 70 35, 60 35 C 70 35, 70 45, 60 45" stroke="white" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+  
+  <text x="90" y="42" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#111827">IdeaStruct</text>
+  
+  <!-- Main Content Area -->
+  <rect x="50" y="120" width="1100" height="505" rx="8" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1"/>
+  
+  <!-- Dashboard Title -->
+  <text x="100" y="170" font-family="Arial, sans-serif" font-size="32" font-weight="bold" fill="#111827">My App Ideas</text>
+  
+  <!-- Add New Idea Button -->
+  <rect x="950" y="140" width="150" height="50" rx="8" fill="#4F46E5"/>
+  <text x="985" y="172" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="white">+ New Idea</text>
+  
+  <!-- App Ideas Cards -->
+  <!-- Card 1 -->
+  <rect x="100" y="220" width="320" height="180" rx="8" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="2"/>
+  <text x="120" y="250" font-family="Arial, sans-serif" font-size="22" font-weight="bold" fill="#111827">Food Delivery App</text>
+  <rect x="120" y="265" width="80" height="24" rx="12" fill="#EEF2FF"/>
+  <text x="135" y="282" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#4F46E5">Mobile</text>
+  
+  <text x="120" y="310" font-family="Arial, sans-serif" font-size="16" fill="#111827">• Target: Urban professionals</text>
+  <text x="120" y="340" font-family="Arial, sans-serif" font-size="16" fill="#111827">• Features: Order tracking, payments</text>
+  
+  <rect x="120" y="360" width="280" height="40" rx="6" fill="#F3F4F6" stroke="#E5E7EB" stroke-width="1"/>
+  <text x="190" y="385" font-family="Arial, sans-serif" font-size="16" fill="#111827">Download Blueprint</text>
+  
+  <!-- Card 2 -->
+  <rect x="440" y="220" width="320" height="180" rx="8" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="2"/>
+  <text x="460" y="250" font-family="Arial, sans-serif" font-size="22" font-weight="bold" fill="#111827">Fitness Tracker</text>
+  <rect x="460" y="265" width="80" height="24" rx="12" fill="#EEF2FF"/>
+  <text x="480" y="282" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#4F46E5">Web</text>
+  
+  <text x="460" y="310" font-family="Arial, sans-serif" font-size="16" fill="#111827">• Target: Fitness enthusiasts</text>
+  <text x="460" y="340" font-family="Arial, sans-serif" font-size="16" fill="#111827">• Features: Workout plans, tracking</text>
+  
+  <rect x="460" y="360" width="280" height="40" rx="6" fill="#F3F4F6" stroke="#E5E7EB" stroke-width="1"/>
+  <text x="530" y="385" font-family="Arial, sans-serif" font-size="16" fill="#111827">Download Blueprint</text>
+  
+  <!-- Card 3 -->
+  <rect x="780" y="220" width="320" height="180" rx="8" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="2"/>
+  <text x="800" y="250" font-family="Arial, sans-serif" font-size="22" font-weight="bold" fill="#111827">Social Network</text>
+  <rect x="800" y="265" width="80" height="24" rx="12" fill="#EEF2FF"/>
+  <text x="820" y="282" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#4F46E5">Both</text>
+  
+  <text x="800" y="310" font-family="Arial, sans-serif" font-size="16" fill="#111827">• Target: Young adults</text>
+  <text x="800" y="340" font-family="Arial, sans-serif" font-size="16" fill="#111827">• Features: Profiles, messaging</text>
+  
+  <rect x="800" y="360" width="280" height="40" rx="6" fill="#F3F4F6" stroke="#E5E7EB" stroke-width="1"/>
+  <text x="870" y="385" font-family="Arial, sans-serif" font-size="16" fill="#111827">Download Blueprint</text>
+  
+  <!-- Card 4 -->
+  <rect x="100" y="420" width="320" height="180" rx="8" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="2"/>
+  <text x="120" y="450" font-family="Arial, sans-serif" font-size="22" font-weight="bold" fill="#111827">E-commerce Store</text>
+  <rect x="120" y="465" width="80" height="24" rx="12" fill="#EEF2FF"/>
+  <text x="140" y="482" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#4F46E5">Web</text>
+  
+  <text x="120" y="510" font-family="Arial, sans-serif" font-size="16" fill="#111827">• Target: Online shoppers</text>
+  <text x="120" y="540" font-family="Arial, sans-serif" font-size="16" fill="#111827">• Features: Product catalog, checkout</text>
+  
+  <rect x="120" y="560" width="280" height="40" rx="6" fill="#F3F4F6" stroke="#E5E7EB" stroke-width="1"/>
+  <text x="190" y="585" font-family="Arial, sans-serif" font-size="16" fill="#111827">Download Blueprint</text>
+  
+  <!-- Card 5 -->
+  <rect x="440" y="420" width="320" height="180" rx="8" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="2"/>
+  <text x="460" y="450" font-family="Arial, sans-serif" font-size="22" font-weight="bold" fill="#111827">Travel Planner</text>
+  <rect x="460" y="465" width="80" height="24" rx="12" fill="#EEF2FF"/>
+  <text x="475" y="482" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#4F46E5">Mobile</text>
+  
+  <text x="460" y="510" font-family="Arial, sans-serif" font-size="16" fill="#111827">• Target: Travelers, tourists</text>
+  <text x="460" y="540" font-family="Arial, sans-serif" font-size="16" fill="#111827">• Features: Itinerary planning, maps</text>
+  
+  <rect x="460" y="560" width="280" height="40" rx="6" fill="#F3F4F6" stroke="#E5E7EB" stroke-width="1"/>
+  <text x="530" y="585" font-family="Arial, sans-serif" font-size="16" fill="#111827">Download Blueprint</text>
+  
+  <!-- Large Explanatory Text -->
+  <rect x="780" y="420" width="320" height="180" rx="8" fill="#4F46E5" opacity="0.1"/>
+  <text x="940" y="480" font-family="Arial, sans-serif" font-size="24" font-weight="bold" text-anchor="middle" fill="#4F46E5">IdeaStruct</text>
+  <text x="940" y="520" font-family="Arial, sans-serif" font-size="18" text-anchor="middle" fill="#4F46E5">Organize your app ideas</text>
+  <text x="940" y="550" font-family="Arial, sans-serif" font-size="18" text-anchor="middle" fill="#4F46E5">Generate blueprints with AI</text>
+  
+  <!-- Gradients -->
+  <defs>
+    <linearGradient id="header-logo-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4F46E5"/>
+      <stop offset="100%" stop-color="#8B5CF6"/>
+    </linearGradient>
+  </defs>
+</svg>
