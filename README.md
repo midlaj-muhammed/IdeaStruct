@@ -19,7 +19,7 @@ Turn your app ideas into structured blueprints instantly with AI-powered insight
 - **UI Components**: shadcn/ui
 - **Authentication**: Supabase Auth
 - **Database**: Supabase PostgreSQL
-- **AI Integration**: OpenAI GPT
+- **AI Integration**: Google Gemini 
 - **State Management**: React Hooks
 - **Type Safety**: TypeScript
 
