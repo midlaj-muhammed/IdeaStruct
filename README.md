@@ -30,7 +30,7 @@ Turn your app ideas into structured blueprints instantly with AI-powered insight
 - Node.js 18+ 
 - npm or yarn
 - Supabase account
-- OpenAI API key
+- Google Gemini
 
 ### Environment Setup
 
@@ -39,7 +39,6 @@ Create a `.env.local` file in the root directory:
 ```env
 NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
-OPENAI_API_KEY=your_openai_api_key
 NEXT_PUBLIC_APP_URL=http://localhost:3000
 ```
 
